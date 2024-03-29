@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchContacts } from "./contactsOps";
+import { fetchContacts, addContact } from "./contactsOps";
 
 const slice = createSlice({
     name: "contacts",
@@ -8,7 +8,7 @@ const slice = createSlice({
     loading: false,
     error: null
     },
-    extraReducers: (builder) =>
+    extraReducers: (builder) => 
         builder
             .addCase(fetchContacts.pending, (state) => {
             state.error = false;
@@ -19,6 +19,17 @@ const slice = createSlice({
                 state.items = action.payload
             })
             .addCase(fetchContacts.rejected, (state) => {
+                state.loading = false;
+                state.error = true;
+            }).addCase(addContact.pending, (state) => {
+            state.error = false;
+            state.loading = true;
+            })
+            .addCase(addContact.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items.push(action.payload);
+            })
+            .addCase(addContact.rejected, (state) => {
                 state.loading = false;
                 state.error = true;
             }),
